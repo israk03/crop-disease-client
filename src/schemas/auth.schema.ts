@@ -41,7 +41,7 @@ export const registerSchema = z
       .string()
       .min(1, "Please confirm your password"),
 
-    role: z.enum(["FARMER", "EXPERT"]).default("FARMER"),
+    role: z.enum(["FARMER", "EXPERT"]),
   })
   .refine(
     (data) => data.password === data.confirmPassword,
