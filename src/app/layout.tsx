@@ -6,6 +6,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
+import { AuthProvider } from "@/providers/auth-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -120,6 +121,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
+            <AuthProvider>
             {children}
 
             <Toaster
@@ -128,6 +130,7 @@ export default function RootLayout({
               closeButton
               duration={4000}
             />
+            </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>
