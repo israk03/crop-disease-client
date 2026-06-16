@@ -6,7 +6,7 @@ const PUBLIC_ROUTES = new Set(["/", "/login", "/register"]);
 // Public but accessible with or without auth
 const PUBLIC_BROWSABLE = ["/experts", "/community", "/search"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const refreshToken = request.cookies.get("refreshToken")?.value;

@@ -17,7 +17,7 @@ export const ROUTES = {
   FARMER: {
     ROOT: "/farmer",
 
-    DASHBOARD: "/farmer/dashboard",
+    DASHBOARD: "/dashboard",
 
     FARMS: "/farmer/farms",
 
@@ -76,7 +76,7 @@ export const ROUTES = {
     ROOT: "/expert",
 
     DASHBOARD:
-      "/expert/dashboard",
+      "/dashboard",
 
     CONSULTATIONS:
       "/expert/consultations",
@@ -110,7 +110,7 @@ export const ROUTES = {
     ROOT: "/admin",
 
     DASHBOARD:
-      "/admin/dashboard",
+      "/dashboard",
 
     USERS:
       "/admin/users",

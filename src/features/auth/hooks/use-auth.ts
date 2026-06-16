@@ -55,6 +55,7 @@ export function useAuth() {
       authService.login(payload),
 
     onSuccess: (data) => {
+      console.log("LOGIN RESPONSE:", data);
       setAccessToken(data.accessToken);
 
       setUser(data.user);
@@ -74,7 +75,10 @@ export function useAuth() {
           ? ROUTES.EXPERT.DASHBOARD
           : ROUTES.FARMER.DASHBOARD;
 
-      router.push(redirect);
+      window.location.href = redirect;
+
+      console.log("ROLE:", data.user.role);
+console.log("REDIRECT:", redirect);
     },
 
     onError: (
@@ -111,7 +115,7 @@ export function useAuth() {
           ? ROUTES.EXPERT.DASHBOARD
           : ROUTES.FARMER.DASHBOARD;
 
-      router.push(redirect);
+      window.location.href = redirect;
     },
 
     onError: (
@@ -141,7 +145,7 @@ export function useAuth() {
         "Logged out successfully"
       );
 
-      router.push(ROUTES.LOGIN);
+      window.location.href = ROUTES.LOGIN;
     },
 
     onError: () => {

@@ -103,7 +103,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
+      
     >
       <body
         className={`
@@ -113,6 +113,7 @@ export default function RootLayout({
           antialiased
           min-h-screen
         `}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"

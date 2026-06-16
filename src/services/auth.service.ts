@@ -55,14 +55,15 @@ const logout = async (): Promise<void> => {
 };
 
 const getMe = async (): Promise<User> => {
-  const response =
-    await api.get<ApiResponse<User>>("/auth/me");
+  const response = await api.get<
+    ApiResponse<{ user: User }>
+  >("/auth/me");
 
-  if (!response.data.data) {
+  if (!response.data.data?.user) {
     throw new Error("Failed to fetch user");
   }
 
-  return response.data.data;
+  return response.data.data.user;
 };
 
 const refreshToken = async (): Promise<{
