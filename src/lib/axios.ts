@@ -110,7 +110,12 @@ api.interceptors.response.use(
         if (typeof window !== "undefined") {
           document.cookie =
             "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          window.location.href = "/login";
+           if (
+  window.location.pathname !== "/login" &&
+  window.location.pathname !== "/register"
+) {
+  window.location.replace("/login");
+}
         }
 
         return Promise.reject(refreshError);

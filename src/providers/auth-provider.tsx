@@ -1,60 +1,75 @@
 "use client";
 
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect }   from "react";
+import { useQuery }    from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 
-import { authService } from "@/services/auth.service";
+import { authService }  from "@/services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
-import { QUERY_KEYS } from "@/constants/query-keys";
+import { QUERY_KEYS }   from "@/constants/query-keys";
+import { getAccessToken } from "@/lib/axios";
+
+// Auth pages — never attempt session restore here
+const AUTH_ROUTES = new Set(["/login", "/register"]);
 
 export function AuthProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const {
-    setUser,
-    clearUser,
-    setLoading,
-  } = useAuthStore();
+  const pathname = usePathname();
+  const { setUser, clearUser, setLoading } = useAuthStore();
 
-  const {
-    data,
-    isSuccess,
-    isError,
-    isPending,
-  } = useQuery({
+  const isAuthPage  = AUTH_ROUTES.has(pathname);
+  const hasToken    = Boolean(getAccessToken());
+
+  // Only call getMe when:
+  // 1. Not on login/register
+  // 2. An access token exists in memory
+  const shouldFetch = !isAuthPage && hasToken;
+
+  const { data, isSuccess, isError, isPending } = useQuery({
     queryKey: QUERY_KEYS.AUTH.ME,
-    queryFn: authService.getMe,
-
-    retry: false,
-
+    queryFn:  authService.getMe,
+    enabled:  shouldFetch,
+    retry:    false,
     staleTime: Infinity,
-
     refetchOnWindowFocus: false,
   });
 
+  // ✅ ALL state mutations go inside useEffect — never during render
   useEffect(() => {
+    // Not fetching at all (auth page or no token)
+    if (!shouldFetch) {
+      clearUser();
+      setLoading(false);
+      return;
+    }
+
+    // Query is running — show loading
     if (isPending) {
       setLoading(true);
       return;
     }
 
+    // Query succeeded
     if (isSuccess && data) {
       setUser(data);
       setLoading(false);
       return;
     }
 
+    // Query failed — clear session
     if (isError) {
       clearUser();
       setLoading(false);
     }
   }, [
-    data,
+    shouldFetch,
+    isPending,
     isSuccess,
     isError,
-    isPending,
+    data,
     setUser,
     clearUser,
     setLoading,

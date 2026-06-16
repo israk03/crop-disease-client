@@ -9,7 +9,10 @@ const PUBLIC_BROWSABLE = ["/experts", "/community", "/search"];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const token = request.cookies.get("accessToken")?.value;
+  const refreshToken = request.cookies.get("refreshToken")?.value;
+
+  const isAuthenticated = Boolean(refreshToken);
+
   const userRole = request.cookies.get("userRole")?.value as
     | "FARMER"
     | "EXPERT"
@@ -22,7 +25,7 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  const isAuthenticated = Boolean(token);
+ 
 
   // ── 1. Block unauthenticated access to protected routes ──
   if (!isAuthenticated && !isPublicRoute && !isPublicBrowsable) {
