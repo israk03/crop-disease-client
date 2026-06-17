@@ -24,6 +24,9 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const { user, isLoading } = useAuthStore();
 
+  console.log("USER:", user);
+console.log("ROLE:", user?.role);
+
   // High-fidelity skeletal state while auth tokens are being evaluated
   if (isLoading) {
     return (

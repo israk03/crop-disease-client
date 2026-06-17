@@ -13,11 +13,6 @@ export function proxy(request: NextRequest) {
 
   const isAuthenticated = Boolean(refreshToken);
 
-  const userRole = request.cookies.get("userRole")?.value as
-    | "FARMER"
-    | "EXPERT"
-    | "ADMIN"
-    | undefined;
 
   const isPublicRoute = PUBLIC_ROUTES.has(pathname);
 
@@ -37,28 +32,11 @@ export function proxy(request: NextRequest) {
 
   // ── 2. Redirect logged-in users away from auth pages ──
   if (isAuthenticated && (pathname === "/login" || pathname === "/register")) {
-    const redirectPath =
-      userRole === "ADMIN"
-        ? "/admin/dashboard"
-        : userRole === "EXPERT"
-        ? "/expert/dashboard"
-        : "/dashboard";
+    const redirectPath = "/dashboard";
 
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
-  // ── 3. Role-based protection ──
-  if (pathname.startsWith("/admin") && userRole !== "ADMIN") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  if (
-    pathname.startsWith("/expert") &&
-    userRole !== "EXPERT" &&
-    userRole !== "ADMIN"
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
 
   return NextResponse.next();
 }

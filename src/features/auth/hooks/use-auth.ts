@@ -55,10 +55,12 @@ export function useAuth() {
       authService.login(payload),
 
     onSuccess: (data) => {
-      console.log("LOGIN RESPONSE:", data);
+      console.log("LOGIN SUCCESS");
+    console.log(data);
       setAccessToken(data.accessToken);
 
       setUser(data.user);
+      console.log("USER ROLE:", data.user.role);
 
       setRoleCookie(data.user.role);
 
@@ -84,6 +86,8 @@ console.log("REDIRECT:", redirect);
     onError: (
       error: AxiosError<{ message?: string }>
     ) => {
+      console.log("LOGIN ERROR");
+    console.log(error);
       toast.error(
         getErrorMessage(
           error,

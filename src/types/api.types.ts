@@ -72,7 +72,6 @@ export interface User {
   location?: string;
 
   role: UserRole;
-  status: UserStatus;
 
   isVerified: boolean;
 
