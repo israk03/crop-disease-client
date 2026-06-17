@@ -23,13 +23,12 @@ export function AuthProvider({
   const isAuthPage  = AUTH_ROUTES.has(pathname);
 const shouldFetch = !isAuthPage;
 
-  const { data, isSuccess, isError, isPending } = useQuery({
+  const { data, isSuccess, isError, isPending } =
+  useQuery({
     queryKey: QUERY_KEYS.AUTH.ME,
-    queryFn:  authService.getMe,
-    enabled:  shouldFetch,
-    retry:    false,
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
+    queryFn: authService.getMe,
+    enabled: shouldFetch,
+    retry: false,
   });
 
   // ✅ ALL state mutations go inside useEffect — never during render

@@ -95,6 +95,9 @@ console.log("ROLE:", user?.role);
     );
   }
 
+  console.log("USER:", user);
+console.log("ROLE:", user?.role);
+
   // Multi-tenant navigation distribution sorted by auth tier rules
   const sidebar =
     user?.role === "ADMIN" ? (

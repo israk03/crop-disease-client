@@ -45,7 +45,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       const response = await api.get("/auth/me");
 
-      const user: User | undefined = response.data?.data;
+      const user: User | undefined = response.data?.data?.user;
 
       if (user) {
         set({
