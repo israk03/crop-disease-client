@@ -41,8 +41,11 @@ export function LoginForm() {
   });
 
   const onSubmit = (values: LoginFormValues) => {
-    login(values);
-  };
+  console.log("FORM SUBMITTED");
+  console.log(values);
+
+  login(values);
+};
 
   return (
     <motion.div

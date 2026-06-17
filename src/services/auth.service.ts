@@ -21,11 +21,14 @@ export interface AuthResponse {
 const login = async (
   payload: LoginPayload
 ): Promise<AuthResponse> => {
-  const response =
-    await api.post<ApiResponse<AuthResponse>>(
-      "/auth/login",
-      payload
-    );
+  console.log("LOGIN REQUEST");
+
+  const response = await api.post<
+    ApiResponse<AuthResponse>
+  >("/auth/login", payload);
+
+  console.log("LOGIN RESPONSE");
+  console.log(response.data);
 
   if (!response.data.data) {
     throw new Error("Login failed");
