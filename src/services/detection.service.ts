@@ -7,6 +7,13 @@ import type {
   DetectionStatus,
 } from "@/types/api.types";
 
+
+export interface DetectionListParams {
+  status?: DetectionStatus;
+  page?: number;
+  limit?: number;
+}
+
 export interface DetectionListParams {
   status?: DetectionStatus;
   page?: number;

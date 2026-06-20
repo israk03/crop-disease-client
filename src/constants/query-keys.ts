@@ -1,7 +1,8 @@
-type QueryParams = Record<
-  string,
-  unknown
->;
+export interface QueryParams {
+  status?: string;
+  page?: number;
+  limit?: number;
+}
 
 export const QUERY_KEYS = {
   AUTH: {
