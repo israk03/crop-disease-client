@@ -9,21 +9,16 @@ interface UseDetectionsParams {
   limit?: number;
 }
 
-export function useMyDetections(
-  params: UseDetectionsParams = {}
-) {
+export function useMyDetections(params: UseDetectionsParams = {}) {
   const query = useQuery({
     queryKey: QUERY_KEYS.DETECTIONS.LIST(params),
-
-    queryFn: () =>
-      detectionService.getMyDetections(params),
+    queryFn: () => detectionService.getMyDetections(params),
 
     staleTime: 30_000,
 
-    // 🔥 prevents UI flicker during pagination
+    // keeps UI stable during pagination transitions
     placeholderData: (prev) => prev,
 
-    // 🔥 safer refetch behavior
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
   });
@@ -31,8 +26,8 @@ export function useMyDetections(
   return {
     ...query,
 
-    // 🔥 normalized data shape for UI consistency
+    // normalized UI layer
     detections: query.data?.detections ?? [],
-    meta: query.data?.meta,
+    meta: query.data?.meta ?? null,
   };
 }
