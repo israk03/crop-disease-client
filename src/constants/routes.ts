@@ -19,56 +19,56 @@ export const ROUTES = {
 
     DASHBOARD: "/dashboard",
 
-    FARMS: "/farmer/farms",
+    FARMS: "/farms",
 
     FARM: (farmId: string | number) =>
-      `/farmer/farms/${farmId}`,
+      `/farms/${farmId}`,
 
     FARM_CROPS: (farmId: string | number) =>
-      `/farmer/farms/${farmId}/crops`,
+      `/farms/${farmId}/crops`,
 
     CROP: (
       farmId: string | number,
       cropId: string | number
     ) =>
-      `/farmer/farms/${farmId}/crops/${cropId}`,
+      `/farms/${farmId}/crops/${cropId}`,
 
-    DETECT: "/farmer/detect",
+    DETECT: "/detect",
 
-    DETECTIONS: "/farmer/detections",
+    DETECTIONS: "/detections",
 
     DETECTION: (id: string | number) =>
-      `/farmer/detections/${id}`,
+      `/detections/${id}`,
 
-    EXPERTS: "/farmer/experts",
+    EXPERTS: "/experts",
 
     EXPERT: (id: string | number) =>
-      `/farmer/experts/${id}`,
+      `/experts/${id}`,
 
     CONSULTATIONS:
-      "/farmer/consultations",
+      "/consultations",
 
     CONSULTATION: (
       id: string | number
     ) =>
-      `/farmer/consultations/${id}`,
+      `/consultations/${id}`,
 
     COMMUNITY:
-      "/farmer/community",
+      "/community",
 
     POST: (id: string | number) =>
-      `/farmer/community/${id}`,
+      `/community/${id}`,
 
-    WEATHER: "/farmer/weather",
+    WEATHER: "/weather",
 
-    ALERTS: "/farmer/alerts",
+    ALERTS: "/alerts",
 
     NOTIFICATIONS:
-      "/farmer/notifications",
+      "/notifications",
 
-    PROFILE: "/farmer/profile",
+    PROFILE: "/profile",
 
-    SETTINGS: "/farmer/settings",
+    SETTINGS: "/settings",
   },
 
   // Expert

@@ -16,6 +16,9 @@ import {
   Shield,
   Info,
   Layers,
+  CheckCircle2,
+  AlertTriangle,
+  Activity
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -29,6 +32,7 @@ interface TabConfig {
   label: string;
   icon: LucideIcon;
   iconColor: string;
+  accentColor: string;
 }
 
 const TABS: TabConfig[] = [
@@ -37,126 +41,194 @@ const TABS: TabConfig[] = [
     label: "Overview",
     icon: Info,
     iconColor: "text-blue-500",
+    accentColor: "blue",
   },
   {
     key: "organicTreatment",
     label: "Organic",
     icon: Leaf,
     iconColor: "text-emerald-500",
+    accentColor: "emerald",
   },
   {
     key: "chemicalTreatment",
     label: "Chemical",
     icon: FlaskConical,
     iconColor: "text-purple-500",
+    accentColor: "purple",
   },
   {
     key: "preventiveMeasures",
     label: "Prevention",
     icon: Shield,
     iconColor: "text-amber-500",
+    accentColor: "amber",
   },
 ];
 
-function renderContent(value: unknown) {
+// Enhanced rendering engine updated to display sub-cards directly at the bottom
+function renderEnhancedContent(value: unknown, tabKey: keyof AIResult) {
   if (!value || (Array.isArray(value) && value.length === 0)) {
     return (
-      <p className="text-xs font-mono font-bold text-zinc-400 dark:text-zinc-500 py-2 italic">
-        No specific protocols recorded for this metric.
-      </p>
+      <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 py-3 italic">
+        <Activity className="h-3.5 w-3.5 animate-pulse" />
+        <span>No direct protocols logged for this parameter metric.</span>
+      </div>
     );
   }
 
-  if (Array.isArray(value)) {
-    return (
-      <ul className="space-y-2.5">
-        {value.map((item, idx) => (
-          <li 
-            key={idx} 
-            className="flex items-start gap-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-300 leading-relaxed"
-          >
-            <span className="flex h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-600 mt-1.5 shrink-0" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    );
-  }
+  // Parse comma/period separated strings into clean list arrays
+  const items = Array.isArray(value) 
+    ? value 
+    : String(value).split(/[.,;!]/).map(s => s.trim()).filter(s => s.length > 3);
 
   return (
-    <p className="text-xs font-medium leading-relaxed text-zinc-600 dark:text-zinc-300">
-      {String(value)}
-    </p>
+    <div className="space-y-5 pt-1 w-full">
+      
+      {/* 1. Top Section: Full-Width Execution Steps List */}
+      <div className="w-full space-y-3">
+        <div className="text-[11px] font-bold tracking-wider uppercase text-zinc-500 font-mono flex items-center gap-1.5 mb-1">
+          <CheckCircle2 className="h-3.5 w-3.5 text-zinc-400" />
+          <span>Recommended Execution Steps</span>
+        </div>
+        <ul className="space-y-2.5 w-full">
+          {items.map((item, idx) => (
+            <li 
+              key={idx} 
+              className="flex items-start gap-2.5 text-xs font-medium text-zinc-300 leading-relaxed bg-[#191d24]/40 p-3 rounded-xl border border-zinc-800/40 w-full"
+            >
+              <span className="flex h-5 w-5 rounded-md bg-[#1d222b] border border-zinc-800 text-[10px] font-mono font-bold text-zinc-400 items-center justify-center shrink-0 mt-0.5">
+                0{idx + 1}
+              </span>
+              <span className="pt-0.5">{item}.</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 2. Bottom Section: Contextual Guidance Sub-card Box */}
+      <div className="w-full pt-1">
+        {tabKey === "organicTreatment" && (
+          <div className="rounded-xl border border-emerald-500/10 bg-emerald-500/5 p-4 space-y-2">
+            <div className="flex items-center gap-2 text-emerald-400">
+              <Leaf className="h-4 w-4" />
+              <h5 className="text-xs font-bold uppercase tracking-wider font-mono">Eco-Compliance Status</h5>
+            </div>
+            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">
+              Biological methodologies support beneficial insect life, generate zero systemic toxin accumulation, and carry a 0-day chemical withholding limit.
+            </p>
+          </div>
+        )}
+
+        {tabKey === "chemicalTreatment" && (
+          <div className="rounded-xl border border-purple-500/10 bg-purple-500/5 p-4 space-y-2">
+            <div className="flex items-center gap-2 text-purple-400">
+              <AlertTriangle className="h-4 w-4" />
+              <h5 className="text-xs font-bold uppercase tracking-wider font-mono">Application Safeguards</h5>
+            </div>
+            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">
+              Wear personal protection layout arrays during application. Do not pass water runoff networks or allow secondary drift into adjacent properties.
+            </p>
+          </div>
+        )}
+
+        {tabKey === "preventiveMeasures" && (
+          <div className="rounded-xl border border-amber-500/10 bg-amber-500/5 p-4 space-y-2">
+            <div className="flex items-center gap-2 text-amber-400">
+              <Shield className="h-4 w-4" />
+              <h5 className="text-xs font-bold uppercase tracking-wider font-mono">Structural Resilience</h5>
+            </div>
+            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">
+              Cultural controls build core micro-climate resistance profiles. Consistent row aeration blocks humidity pockets that feed fungal spores.
+            </p>
+          </div>
+        )}
+
+        {tabKey === "description" && (
+          <div className="rounded-xl border border-blue-500/10 bg-blue-500/5 p-4 space-y-2">
+            <div className="flex items-center gap-2 text-blue-400">
+              <Info className="h-4 w-4" />
+              <h5 className="text-xs font-bold uppercase tracking-wider font-mono">Diagnostic Summary</h5>
+            </div>
+            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">
+              This system analysis cross-references real-time visual telemetry patterns against historical regional vector profiles.
+            </p>
+          </div>
+        )}
+      </div>
+
+    </div>
   );
 }
 
 export function TreatmentTabs({ result }: TreatmentTabsProps) {
   return (
     <Tabs defaultValue="description" className="w-full select-none">
-      
-      {/* High-Contrast Tab Segment List Controls */}
-      <TabsList className="grid grid-cols-4 w-full bg-zinc-100 p-1 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/80 rounded-xl h-11">
-        {TABS.map((tab) => (
-          <TabsTrigger
-            key={tab.key}
-            value={tab.key}
-            className="flex items-center justify-center gap-1.5 text-[11px] font-bold font-mono tracking-wide uppercase rounded-lg transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50 data-[state=active]:shadow-sm text-zinc-500 dark:text-zinc-400"
-          >
-            <tab.icon className={cn("h-3.5 w-3.5 shrink-0 transition-transform duration-200", tab.iconColor)} />
-            <span className="hidden md:inline">{tab.label}</span>
-          </TabsTrigger>
-        ))}
-      </TabsList>
+      <div className="w-full rounded-2xl border border-zinc-800 bg-[#0f1115] p-5 shadow-xl space-y-4">
+        
+        {/* ── Top Header Navigation Bar ── */}
+        <div className="w-full border-b border-zinc-800/80 pb-3">
+          <TabsList className="flex flex-wrap gap-2 w-full justify-start bg-transparent p-0 h-auto border-none rounded-none">
+            {TABS.map((tab) => (
+              <TabsTrigger
+                key={tab.key}
+                value={tab.key}
+                className="flex items-center justify-center gap-2 px-4 h-10 text-xs font-bold font-mono tracking-wider uppercase rounded-xl border border-zinc-800 bg-[#14171c] text-zinc-400 transition-all duration-200 data-[state=active]:bg-[#1a1f26] data-[state=active]:text-white data-[state=active]:border-zinc-700 data-[state=active]:shadow-md hover:text-zinc-200"
+              >
+                <tab.icon className={cn("h-4 w-4 shrink-0", tab.iconColor)} />
+                <span>{tab.label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
-      {/* Target Content Presentation Panels */}
-      {TABS.map((tab) => (
-        <TabsContent
-          key={tab.key}
-          value={tab.key}
-          className="mt-4 rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/40 shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400/30 transition-all"
-        >
-          {/* Context Header Sub-Row */}
-          <div className="flex items-center gap-2 pb-3 mb-4 border-b border-zinc-100 dark:border-zinc-800/60">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-50 border border-zinc-100 dark:bg-zinc-900 dark:border-zinc-800">
-              <tab.icon className={cn("h-4 w-4 shrink-0", tab.iconColor)} />
-            </div>
-            <h4 className="text-xs font-bold font-mono uppercase tracking-wider text-zinc-900 dark:text-zinc-50">
-              {tab.label} Protocol Data
-            </h4>
-          </div>
-
-          {/* Core Descriptive Text Block */}
-          <div className="px-0.5">
-            {renderContent(result[tab.key])}
-          </div>
-
-          {/* Secondary Structural Inversion Trigger block (Causes Overview Only) */}
-          {tab.key === "description" &&
-            result.causes &&
-            result.causes.length > 0 && (
-              <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-800/60 space-y-3">
-                <div className="flex items-center gap-1.5">
-                  <Layers className="w-3.5 h-3.5 text-zinc-400" />
-                  <p className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                    Pathological Etiology & Causes
-                  </p>
+        {/* ── Content Viewports ── */}
+        <div className="w-full">
+          {TABS.map((tab) => (
+            <TabsContent
+              key={tab.key}
+              value={tab.key}
+              className="mt-0 focus-visible:outline-none focus-visible:ring-0 m-0 data-[state=inactive]:hidden"
+            >
+              <div className="rounded-xl border border-zinc-800 bg-[#14171c] p-5 space-y-4 shadow-inner">
+                
+                {/* Dynamic Title Row Inside Tab Container Card */}
+                <div className="flex items-center gap-3 pb-3 border-b border-zinc-800/80">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1a1f26] border border-zinc-800">
+                    <tab.icon className={cn("h-4 w-4 shrink-0", tab.iconColor)} />
+                  </div>
+                  <h4 className="text-xs font-bold font-mono uppercase tracking-widest leading-tight text-white">
+                    {tab.label} Protocol Insights
+                  </h4>
                 </div>
 
-                <ul className="space-y-2">
-                  {result.causes.map((cause, idx) => (
-                    <li 
-                      key={idx} 
-                      className="flex items-start gap-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-300 leading-relaxed"
-                    >
-                      <span className="flex h-1.5 w-1.5 rounded-full bg-rose-400 dark:bg-rose-500/80 mt-1.5 shrink-0 ring-4 ring-rose-500/10" />
-                      <span>{cause}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Enhanced Vertically Stacked Content Area */}
+                <div className="px-0.5">
+                  {renderEnhancedContent(result[tab.key], tab.key)}
+                </div>
+
+                {/* Pathology Causes Sub-Block (Overview / Description tab only) */}
+                {tab.key === "description" && result.causes && result.causes.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-zinc-800/80 space-y-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5 text-zinc-500" />
+                      <p className="text-[10px] font-bold font-mono uppercase tracking-wider text-zinc-500">
+                        Etiology Causes
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2 text-xs text-zinc-400 pl-0.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                      <span>{String(result.causes)}</span>
+                    </div>
+                  </div>
+                )}
+
               </div>
-            )}
-        </TabsContent>
-      ))}
+            </TabsContent>
+          ))}
+        </div>
+
+      </div>
     </Tabs>
   );
 }
