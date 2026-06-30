@@ -24,7 +24,7 @@ export const QUERY_KEYS = {
     DETAIL: (
       id: string | number
     ) =>
-      ["detections", id] as const,
+      ["detections","detail", id] as const,
   },
 
   FARMS: {
