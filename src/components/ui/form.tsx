@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
-
+import { Slot } from "@radix-ui/react-slot";
 import {
   Controller,
   FormProvider,
@@ -16,13 +16,44 @@ import { cn } from "@/lib/utils";
 
 const Form = FormProvider;
 
+type FormFieldContextValue<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> = {
+  name: TName;
+};
+
+const FormFieldContext =
+  React.createContext<FormFieldContextValue>(
+    {} as FormFieldContextValue
+  );
+
 const FormField = <
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues>,
 >({
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
-  return <Controller {...props} />;
+  return (
+    <FormFieldContext.Provider value={{ name: props.name }}>
+      <Controller {...props} />
+    </FormFieldContext.Provider>
+  );
+};
+
+const useFormField = () => {
+  const fieldContext = React.useContext(FormFieldContext);
+  const { getFieldState, formState } = useFormContext();
+
+  const fieldState = getFieldState(
+    fieldContext.name,
+    formState
+  );
+
+  return {
+    name: fieldContext.name,
+    ...fieldState,
+  };
 };
 
 const FormItem = React.forwardRef<
@@ -41,45 +72,61 @@ FormItem.displayName = "FormItem";
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <LabelPrimitive.Root
-    ref={ref}
-    className={cn(
-      "text-sm font-medium leading-none",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { error } = useFormField();
+
+  return (
+    <LabelPrimitive.Root
+      ref={ref}
+      className={cn(
+        error && "text-destructive",
+        className
+      )}
+      {...props}
+    />
+  );
+});
 
 FormLabel.displayName = "FormLabel";
 
 const FormControl = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->((props, ref) => (
-  <div ref={ref} {...props} />
-));
+  React.ElementRef<typeof Slot>,
+  React.ComponentPropsWithoutRef<typeof Slot>
+>((props, ref) => {
+  return <Slot ref={ref} {...props} />;
+});
 
 FormControl.displayName = "FormControl";
 
-function FormMessage() {
-  const {
-    formState: { errors },
-  } = useFormContext();
+const FormMessage = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, children, ...props }, ref) => {
+  const { error } = useFormField();
 
-  const firstError = Object.values(errors)[0];
+  const body = error?.message
+    ? String(error.message)
+    : children;
 
-  if (!firstError?.message) {
+  if (!body) {
     return null;
   }
 
   return (
-    <p className="text-sm text-destructive">
-      {String(firstError.message)}
+    <p
+      ref={ref}
+      className={cn(
+        "text-sm font-medium text-destructive",
+        className
+      )}
+      {...props}
+    >
+      {body}
     </p>
   );
-}
+});
+
+FormMessage.displayName = "FormMessage";
 
 export {
   Form,

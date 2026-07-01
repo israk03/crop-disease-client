@@ -101,7 +101,10 @@ export const updateFarmSchema =
   createFarmSchema.partial();
 
 export type CreateFarmFormValues =
-  z.infer<typeof createFarmSchema>;
+  z.input<typeof createFarmSchema>;
+
+export type CreateFarmPayload =
+  z.output<typeof createFarmSchema>;
 
 export type UpdateFarmFormValues =
-  z.infer<typeof updateFarmSchema>;
+  z.input<typeof updateFarmSchema>;
