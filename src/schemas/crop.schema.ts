@@ -79,7 +79,10 @@ export const updateCropSchema =
   createCropSchema.partial();
 
 export type CreateCropFormValues =
-  z.infer<typeof createCropSchema>;
+  z.input<typeof createCropSchema>;
+
+export type CreateCropPayload =
+  z.output<typeof createCropSchema>;
 
 export type UpdateCropFormValues =
-  z.infer<typeof updateCropSchema>;
+  z.input<typeof updateCropSchema>;
