@@ -85,10 +85,11 @@ export function DetectionDetailClient({ id }: DetectionDetailClientProps) {
 
           <div className="space-y-1">
             <p className="text-sm font-semibold text-zinc-100">
-              Telemetry Record Not Found
+              Detection Not Found
             </p>
             <p className="text-xs text-zinc-400 max-w-xs leading-relaxed mx-auto">
-              This detection file may have been purged from database cluster storage nodes or your credential profile lacks direct readout authorization clearings.
+              The detection you are looking for could not be found
+or may have been removed.
             </p>
           </div>
 

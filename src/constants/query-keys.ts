@@ -36,7 +36,7 @@ export const QUERY_KEYS = {
     DETAIL: (
       id: string | number
     ) =>
-      ["farms", id] as const,
+      ["farms","details", id] as const,
 
     CROPS: (
       farmId: string | number
