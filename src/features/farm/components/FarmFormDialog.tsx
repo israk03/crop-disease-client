@@ -1,15 +1,13 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MapPin, Check } from "lucide-react";
 
 import {
   createFarmSchema,
-  type CreateFarmFormValues,
 } from "@/schemas/farm.schema";
-import type { Farm } from "@/types/api.types";
+
 
 import {
   Dialog,
@@ -36,6 +34,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import type { FarmFormValues } from "@/schemas/farm.schema";
+import type { Farm } from "@/types/api.types";
+
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -50,20 +52,23 @@ const SOIL_TYPES = [
 ] as const;
 
 // Clean type-safe structural default values
-const DEFAULT_VALUES: Partial<CreateFarmFormValues> = {
-  name: "",
-  address: "",
-  region: "",
-  
+const DEFAULT_VALUES: FarmFormValues = {
+  name:      "",
+  size:      0,
+  soilType:  "LOAMY",
+  address:   "",
+  region:    "",
+  longitude: undefined,
+  latitude:  undefined,
 };
 
 interface FarmFormDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: Record<string, unknown>) => void;
-  isSubmitting: boolean;
-  defaultValues?: Farm;
-  mode: "create" | "edit";
+  open:          boolean;
+  onOpenChange:  (open: boolean) => void;
+  onSubmit:      (values: FarmFormValues) => void;  // ← FarmFormValues not CreateFarmFormValues
+  isSubmitting:  boolean;
+  defaultValues?: Partial<Farm>;
+  mode:          "create" | "edit";
 }
 
 export function FarmFormDialog({
@@ -76,28 +81,28 @@ export function FarmFormDialog({
 }: FarmFormDialogProps) {
   const [isLocating, setIsLocating] = useState(false);
 
-  const form = useForm<CreateFarmFormValues>({
-    resolver: zodResolver(createFarmSchema),
-    defaultValues: DEFAULT_VALUES as CreateFarmFormValues,
-    mode: "onChange",
-  });
+  const form = useForm<FarmFormValues>({
+  resolver: zodResolver(createFarmSchema),
+  defaultValues: DEFAULT_VALUES,
+  mode: "onChange",
+});
 
   useEffect(() => {
     if (!open) {
-      form.reset(DEFAULT_VALUES as CreateFarmFormValues);
+      form.reset(DEFAULT_VALUES);
       return;
     }
 
     if (mode === "edit" && defaultValues) {
       form.reset({
-        name: defaultValues.name,
-        size: defaultValues.size,
-        soilType: defaultValues.soilType,
-        address: defaultValues.address,
-        region: defaultValues.region,
-        longitude: defaultValues.location?.coordinates?.[0],
-        latitude: defaultValues.location?.coordinates?.[1],
-      });
+  name: defaultValues.name ?? "",
+  size: defaultValues.size ?? 0,
+  soilType: defaultValues.soilType ?? "LOAMY",
+  address: defaultValues.address ?? "",
+  region: defaultValues.region ?? "",
+  longitude: defaultValues.location?.coordinates?.[0],
+  latitude: defaultValues.location?.coordinates?.[1],
+});
     }
   }, [open, mode, defaultValues, form]);
 
@@ -119,24 +124,9 @@ export function FarmFormDialog({
     );
   };
 
-  const handleSubmit = (values: CreateFarmFormValues) => {
-    const payload: Record<string, unknown> = {
-      name: values.name,
-      size: values.size,
-      soilType: values.soilType,
-      address: values.address,
-      region: values.region,
-    };
-
-    if (typeof values.longitude === "number" && typeof values.latitude === "number") {
-      payload.location = {
-        type: "Point",
-        coordinates: [values.longitude, values.latitude],
-      };
-    }
-
-    onSubmit(payload);
-  };
+  const submitForm = (values: FarmFormValues) => {
+  onSubmit(values);
+};
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -153,7 +143,7 @@ export function FarmFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 pt-2">
+          <form onSubmit={form.handleSubmit(submitForm)}>
             
             {/* Field: Name */}
             <FormField
@@ -193,11 +183,7 @@ export function FarmFormDialog({
                         step="0.01"
                         placeholder="e.g. 4.25"
                         className="h-10 bg-[#14171c] border-zinc-800 text-zinc-200 placeholder:text-zinc-600 rounded-xl focus-visible:ring-emerald-500 focus-visible:ring-offset-[#0f1115]"
-                        value={
-  typeof field.value === "number"
-    ? field.value
-    : ""
-}
+                        value={(field.value as number | undefined) ?? ""}
                         onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
                       />
                     </FormControl>
